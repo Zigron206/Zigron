@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Personal Therapist</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            min-height: 100vh;
+            color: #e2e8f0;
+        }
+
+        .premium-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 1.8rem;
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border-radius: 18px;
+            padding: 1.8rem;
+            transition: all 0.3s ease;
+        }
+
+        .header-title {
+            background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 50%, #60a5fa 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 2.7rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 0.65rem;
+            letter-spacing: -0.02em;
+        }
+
+        .header-subtitle {
+            color: #94a3b8;
+            font-size: 1.1rem;
+            text-align: center;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        .control-panel {
+            margin: 1.35rem 0;
+            padding: 1.8rem;
+        }
+
+        .control-button {
+            padding: 0.9rem 1.8rem;
+            min-width: 180px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .start-button {
+            background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
+            color: white;
+        }
+
+        .stop-button {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+        }
+
+        .visualizer-container {
+            height: 108px;
+            margin: 1.35rem 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 14px;
+            position: relative;
+            overflow: hidden;
+            padding: 9px;
+        }
+
+        .wave-group {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            height: 90px;
+            padding: 0 13px;
+        }
+
+        .wave-bar {
+            width: 3.5px;
+            height: 18px;
+            background: #60a5fa;
+            border-radius: 2px;
+            transition: height 0.1s ease;
+        }
+
+        .wave-bar.active {
+            background: linear-gradient(180deg, #60a5fa 0%, #818cf8 100%);
+            box-shadow: 0 0 15px rgba(96, 165, 250, 0.5);
+        }
+
+        .conversation-panel {
+            padding: 1.75rem;
+        }
+
+        .conversation-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.25rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 1rem;
+        }
+
+        .transcription-area {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 1.1rem;
+            height: 250px;
+            overflow-y: auto;
+        }
+
+        .message-group {
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 10px;
+        }
+
+        .message-text {
+            padding: 10px 0;
+            color: #e2e8f0;
+            line-height: 1.5;
+        }
+
+        .message-text strong {
+            color: #60a5fa;
+            display: inline-block;
+            min-width: 80px;
+        }
+
+        .status-indicator {
+            text-align: center;
+            padding: 0.5rem;
+            font-size: 0.9rem;
+            color: #94a3b8;
+            margin-top: 1rem;
+        }
+
+        .pricing-panel {
+            margin-top: 1rem;
+        }
+
+        .pricing-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 0.75rem;
+        }
+
+        .cost-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .cost-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.875rem;
+        }
+
+        .total-cost {
+            grid-column: span 2;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 0.75rem;
+            margin-top: 0.5rem;
+        }
+
+        /* Demographics form styles */
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            color: #94a3b8;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-group select,
+        .form-group input[type="text"],
+        .form-group textarea {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 0.75rem;
+            color: #e2e8f0;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group select:focus,
+        .form-group input[type="text"]:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+        }
+
+        .form-group select option {
+            background: #1e293b;
+            color: #e2e8f0;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 600;
+            width: 100%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        .demographics-fade {
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.5s ease;
+            display: none;
+        }
+
+        .demographics-active {
+            opacity: 1;
+            transform: translateY(0);
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="premium-container">
+        <!-- Header -->
+        <div class="glass-panel mb-4">
+            <h1 class="header-title">Your Personal Therapist</h1>
+            <p class="header-subtitle">Where understanding meets healing</p>
+        </div>
+
+        <!-- Demographics Panel -->
+        <div id="demographicsPanel" class="glass-panel mb-4 demographics-active">
+            <div class="flex items-center border-b border-opacity-10 border-white pb-4 mb-6">
+                <i class="fas fa-user-circle text-blue-500 text-xl mr-3"></i>
+                <h2 class="text-xl font-semibold">Patient Information</h2>
+            </div>
+
+            <form id="demographicForm" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="form-group">
+                    <label for="age">Age Group</label>
+                    <select id="age" name="age" required>
+                        <option value="">Select Age Group</option>
+                        <option value="13-18">13-18 (Adolescence)</option>
+                        <option value="19-29">19-29 (Young Adulthood)</option>
+                        <option value="30-39">30-39 (Early Adulthood)</option>
+                        <option value="40-59">40-59 (Middle Adulthood)</option>
+                        <option value="60+">60+ (Late Adulthood)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="gender">Gender</label>
+                    <select id="gender" name="gender" required>
+                        <option value="">Select Gender</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="maritalStatus">Marital Status</label>
+                    <select id="maritalStatus" name="maritalStatus" required>
+                        <option value="">Select Marital Status</option>
+                        <option value="single">Single (Never Married)</option>
+                        <option value="married">Married</option>
+                        <option value="separated">Separated</option>
+                        <option value="divorced">Divorced</option>
+                        <option value="widowed">Widowed</option>
+                        <option value="cohabiting">Cohabitating/Partnered</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="ethnicity">Ethnicity & Cultural Background</label>
+                    <select id="ethnicity" name="ethnicity" required>
+                        <option value="">Select Ethnicity</option>
+                        <option value="non-hispanic-white">Non-Hispanic White</option>
+                        <option value="hispanic-latino">Hispanic/Latino</option>
+                        <option value="african-american">African American</option>
+                        <option value="asian-american">Asian American</option>
+                        <option value="native-american">Native American</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="education">Education</label>
+                    <select id="education" name="education" required>
+                        <option value="">Select Education Level</option>
+                        <option value="none">None</option>
+                        <option value="high-school">High School</option>
+                        <option value="undergraduate">Undergraduate</option>
+                        <option value="post-graduate">Post Graduate</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="occupation">Occupation</label>
+                    <input type="text" id="occupation" name="occupation" required>
+                </div>
+
+                <div class="form-group md:col-span-2">
+                    <label for="medicalHistory">Medical History</label>
+                    <textarea id="medicalHistory" name="medicalHistory" required class="w-full h-24"></textarea>
+                </div>
+
+                <div class="md:col-span-2 mt-4">
+                    <button type="submit" class="submit-btn">
+                        <div class="flex items-center justify-center space-x-2">
+                            <span>Continue to Session</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Control Panel -->
+        <div class="glass-panel control-panel">
+            <div class="flex flex-row justify-center items-center space-x-6">
+                <button id="startButton" class="control-button start-button">
+                    <div class="flex items-center justify-center space-x-2">
+                        <i class="fas fa-microphone"></i>
+                        <span>Start Session</span>
+                    </div>
+                </button>
+
+                <button id="stopButton" disabled class="control-button stop-button opacity-50 cursor-not-allowed">
+                    <div class="flex items-center justify-center space-x-2">
+                        <i class="fas fa-stop-circle"></i>
+                        <span>End Session</span>
+                    </div>
+                </button>
+            </div>
+
+            <div class="visualizer-container">
+                <div class="wave-group">
+                    <div class="wave-bar"></div>
+                    <div class="wave-bar"></div>
+                    <div class="wave-bar"></div>
+                    <div class="wave-bar"></div>
+                    <div class="wave-bar"></div>
+                    <div class="wave-bar"></div>
+                    <div class="wave-bar"></div>
+                    <div class="wave-bar"></div>
+                </div>
+            </div>
+
+            <div id="status" class="status-indicator">Please complete patient information to start</div>
+        </div>
+
+        <!-- Conversation Panel -->
+        <div class="glass-panel conversation-panel">
+            <div class="conversation-header">
+                <i class="fas fa-comments text-blue-500 text-xl mr-3"></i>
+                <h2 class="text-xl font-semibold">Conversation</h2>
+            </div>
+            
+            <div id="transcription" class="transcription-area">
+                <div class="text-gray-500 text-center italic">
+                    Your conversation will appear here...
+                </div>
+            </div>
+        </div>
+
+        <!-- Pricing Panel -->
+        <div class="glass-panel pricing-panel">
+            <div class="pricing-header">
+                <i class="fas fa-receipt text-blue-500 text-xl mr-3"></i>
+                <h2 class="text-xl font-semibold">Session Pricing</h2>
+            </div>
+            <div class="cost-grid">
+                <div class="cost-item">
+                    <span class="text-gray-400">Input Tokens:</span>
+                    <span id="inputTokens" class="font-mono">0</span>
+                </div>
+                <div class="cost-item">
+                    <span class="text-gray-400">Input Cost:</span>
+                    <span id="inputCost" class="font-mono">$0.00</span>
+                </div>
+                <div class="cost-item">
+                    <span class="text-gray-400">Output Tokens:</span>
+                    <span id="outputTokens" class="font-mono">0</span>
+                </div>
+                <div class="cost-item">
+                    <span class="text-gray-400">Output Cost:</span>
+                    <span id="outputCost" class="font-mono">$0.00</span>
+                </div>
+                <div class="cost-item">
+                    <span class="text-gray-400">TTS Characters:</span>
+                    <span id="ttsChars" class="font-mono">0</span>
+                </div>
+                <div class="cost-item">
+                    <span class="text-gray-400">TTS Cost:</span>
+                    <span id="ttsCost" class="font-mono">$0.00</span>
+                </div>
+                <div class="cost-item total-cost">
+                    <span class="text-blue-400 font-semibold">Total Cost:</span>
+                    <span id="totalCost" class="font-mono text-white font-semibold">$0.00</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        // Initial setup and global variables
+        const waveBars = document.querySelectorAll('.wave-bar');
+        const startButton = document.getElementById('startButton');
+        const stopButton = document.getElementById('stopButton');
+        const statusDiv = document.getElementById('status');
+        const transcriptionDiv = document.getElementById('transcription');
+    
+        let animationInterval;
+        let socket;
+        let audioContext;
+        let sourceNode;
+        let scriptProcessor;
+        const SAMPLE_RATE = 16000;
+        const BUFFER_SIZE = 1024;
+        let demographicsSubmitted = false;
+    
+        // Disable start button initially
+        startButton.disabled = true;
+        startButton.classList.add('opacity-50', 'cursor-not-allowed');
+    
+        // Class definitions
+        class MessageQueue {
+            constructor() {
+                this.messages = new Map();
+                this.processCallback = null;
+            }
+        
+            setProcessCallback(callback) {
+                this.processCallback = callback;
+            }
+        
+            addChunk(messageSeq, chunkSeq, text) {
+                if (!this.messages.has(messageSeq)) {
+                    this.messages.set(messageSeq, {
+                        text: [],
+                        audioLogs: []
+                    });
+                }
+        
+                const message = this.messages.get(messageSeq);
+                message.text.push(text);
+        
+                if (this.processCallback) {
+                    this.processCallback(messageSeq, text);
+                }
+        
+                this.updateDisplay();
+            }
+        
+            logAudioChunk(messageSeq, chunkSeq) {
+                if (!this.messages.has(messageSeq)) {
+                    this.messages.set(messageSeq, {
+                        text: [],
+                        audioLogs: []
+                    });
+                }
+        
+                const message = this.messages.get(messageSeq);
+                message.audioLogs.push(`[Received Audio] Message: ${messageSeq}, Chunk: ${chunkSeq}`);
+        
+                this.updateDisplay();
+            }
+        
+            updateDisplay() {
+                const transcriptionDiv = document.getElementById('transcription');
+                transcriptionDiv.innerHTML = '';
+    
+                const sortedMessages = Array.from(this.messages.entries())
+                    .sort(([seqA], [seqB]) => seqA - seqB);
+    
+                let currentTherapistResponse = '';
+                
+                for (const [messageSeq, message] of sortedMessages) {
+                    const messageDiv = document.createElement('div');
+                    messageDiv.className = 'message-group';
+    
+                    for (const text of message.text) {
+                        if (text.includes('transcript:')) {
+                            if (currentTherapistResponse) {
+                                const therapistDiv = document.createElement('div');
+                                therapistDiv.className = 'message-text';
+                                therapistDiv.innerHTML = `<strong>Therapist:</strong> ${currentTherapistResponse.trim()}`;
+                                messageDiv.appendChild(therapistDiv);
+                                currentTherapistResponse = '';
+                            }
+                            
+                            const userText = text.split('transcript:')[1].trim();
+                            const textDiv = document.createElement('div');
+                            textDiv.className = 'message-text';
+                            textDiv.innerHTML = `<strong>You:</strong> ${userText}`;
+                            messageDiv.appendChild(textDiv);
+                        } 
+                        else if (text.includes('SENTENCE:')) {
+                            const therapistText = text.split('SENTENCE:')[1].trim();
+                            currentTherapistResponse += ' ' + therapistText;
+                        }
+                    }
+    
+                    if (currentTherapistResponse) {
+                        const therapistDiv = document.createElement('div');
+                        therapistDiv.className = 'message-text';
+                        therapistDiv.innerHTML = `<strong>Therapist:</strong> ${currentTherapistResponse.trim()}`;
+                        messageDiv.appendChild(therapistDiv);
+                        currentTherapistResponse = '';
+                    }
+    
+                    transcriptionDiv.appendChild(messageDiv);
+                }
+    
+                transcriptionDiv.scrollTop = transcriptionDiv.scrollHeight;
+            }
+        }
+    
+        // Fixed AudioQueue class
+        class AudioQueue {
+            constructor(options = {}) {
+                this.currentMessageSeq = null;
+                this.highestMessageSeq = null;
+                this.currentChunkSeq = null;
+                this.messages = new Map();
+                this.playing = false;
+                this.currentAudio = null;
+                this.chunkTimeout = options.chunkTimeout || 5000;
+            }
+    
+            async addAudioChunk(data) {
+                try {
+                    const {messageSeq, chunkSeq, audioData} = this.extractMetadata(data);
+                    console.log(`Received audio - Message: ${messageSeq}, Chunk: ${chunkSeq}`);
+    
+                    // Reset sequence tracking for new messages
+                    if (this.highestMessageSeq === null || messageSeq > this.highestMessageSeq) {
+                        this.highestMessageSeq = messageSeq;
+                        this.currentChunkSeq = null; // Reset chunk sequence for new message
+                    }
+    
+                    // Store the chunk
+                    this.storeChunk(messageSeq, chunkSeq, audioData);
+    
+                    // Update current message sequence if needed
+                    if (this.currentMessageSeq === null || messageSeq > this.currentMessageSeq) {
+                        this.currentMessageSeq = messageSeq;
+                    }
+    
+                    // Process queue if not currently playing
+                    if (!this.playing) {
+                        await this.processQueue();
+                    }
+                } catch (error) {
+                    console.error('Error in addAudioChunk:', error);
+                }
+            }
+    
+            async processQueue() {
+                if (this.playing) return;
+    
+                try {
+                    const currentMessage = this.messages.get(this.currentMessageSeq);
+                    if (!currentMessage) return;
+    
+                    const nextChunk = this.findNextChunk(currentMessage);
+                    if (nextChunk) {
+                        const [chunkSeq, chunk] = nextChunk;
+                        await this.playChunk(chunkSeq, chunk.audio);
+                    } else {
+                        // If no more chunks to play in current message, check if there's a newer message
+                        const nextMessageSeq = this.findNextMessage();
+                        if (nextMessageSeq !== null) {
+                            this.currentMessageSeq = nextMessageSeq;
+                            this.currentChunkSeq = null;
+                            await this.processQueue();
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error in processQueue:', error);
+                    this.playing = false;
+                    this.currentAudio = null;
+                }
+            }
+    
+            findNextMessage() {
+                const messageSeqs = Array.from(this.messages.keys()).sort((a, b) => a - b);
+                const currentIndex = messageSeqs.indexOf(this.currentMessageSeq);
+                if (currentIndex < messageSeqs.length - 1) {
+                    return messageSeqs[currentIndex + 1];
+                }
+                return null;
+            }
+    
+            findNextChunk(currentMessage) {
+                const chunks = Array.from(currentMessage.entries())
+                    .sort(([seqA], [seqB]) => seqA - seqB);
+    
+                return chunks.find(([seq, chunk]) => 
+                    (this.currentChunkSeq === null || seq > this.currentChunkSeq) && !chunk.played
+                );
+            }
+    
+            async playChunk(chunkSeq, audioData) {
+                try {
+                    this.playing = true;
+                    this.currentChunkSeq = chunkSeq;
+    
+                    const blob = new Blob([audioData], { type: 'audio/mp3' });
+                    const url = URL.createObjectURL(blob);
+                    this.currentAudio = new Audio(url);
+    
+                    await new Promise((resolve, reject) => {
+                        this.currentAudio.onended = async () => {
+                            URL.revokeObjectURL(url);
+                            this.markChunkPlayed(chunkSeq);
+                            this.playing = false;
+                            this.currentAudio = null;
+                            resolve();
+                            await this.processQueue();
+                        };
+    
+                        this.currentAudio.onerror = (error) => {
+                            URL.revokeObjectURL(url);
+                            this.playing = false;
+                            this.currentAudio = null;
+                            reject(error);
+                        };
+    
+                        this.currentAudio.play().catch(reject);
+                    });
+                } catch (error) {
+                    console.error(`Error in playChunk ${chunkSeq}:`, error);
+                    this.playing = false;
+                    this.currentAudio = null;
+                    await this.processQueue();
+                }
+            }
+    
+            markChunkPlayed(chunkSeq) {
+                const currentMessage = this.messages.get(this.currentMessageSeq);
+                if (currentMessage) {
+                    const chunk = currentMessage.get(chunkSeq);
+                    if (chunk) chunk.played = true;
+                }
+            }
+    
+            async stopCurrentAudio() {
+                if (this.currentAudio) {
+                    this.currentAudio.pause();
+                    this.currentAudio.currentTime = 0;
+                    this.currentAudio = null;
+                }
+                this.playing = false;
+                this.currentChunkSeq = null;
+            }
+    
+            extractMetadata(data) {
+                const dataView = new DataView(data);
+                return {
+                    messageSeq: dataView.getUint32(0, false),
+                    chunkSeq: dataView.getUint32(4, false),
+                    audioData: data.slice(8)
+                };
+            }
+    
+            storeChunk(messageSeq, chunkSeq, audioData) {
+                if (!this.messages.has(messageSeq)) {
+                    this.messages.set(messageSeq, new Map());
+                }
+    
+                this.messages.get(messageSeq).set(chunkSeq, {
+                    audio: audioData,
+                    played: false,
+                    timestamp: Date.now()
+                });
+            }
+        }
+    </script>
+    <script>
+        // SessionPricing class
+        class SessionPricing {
+            constructor() {
+                this.inputTokens = 0;
+                this.outputTokens = 0;
+                this.ttsChars = 0;
+                
+                this.inputTokenPrice = 0.15;
+                this.outputTokenPrice = 0.60;
+                this.ttsPrice = 15.0;
+            }
+    
+            addInputText(text) {
+                if (text && text.trim().length > 0) {
+                    this.inputTokens += Math.ceil(text.length / 4);
+                    this.updateDisplay();
+                }
+            }
+    
+            addOutputText(text) {
+                if (text && text.trim().length > 0) {
+                    this.outputTokens += Math.ceil(text.length / 4);
+                    this.updateDisplay();
+                }
+            }
+    
+            addTTSChars(text) {
+                if (text && text.trim().length > 0) {
+                    this.ttsChars += text.length;
+                    this.updateDisplay();
+                }
+            }
+    
+            calculateCosts() {
+                const inputCost = (this.inputTokens / 1000000) * this.inputTokenPrice;
+                const outputCost = (this.outputTokens / 1000000) * this.outputTokenPrice;
+                const ttsCost = (this.ttsChars / 1000000) * this.ttsPrice;
+                
+                return {
+                    inputCost,
+                    outputCost,
+                    ttsCost,
+                    totalCost: inputCost + outputCost + ttsCost
+                };
+            }
+    
+            updateDisplay() {
+                const costs = this.calculateCosts();
+                
+                document.getElementById('inputTokens').textContent = this.inputTokens.toLocaleString();
+                document.getElementById('outputTokens').textContent = this.outputTokens.toLocaleString();
+                document.getElementById('ttsChars').textContent = this.ttsChars.toLocaleString();
+                
+                document.getElementById('inputCost').textContent = `$${costs.inputCost.toFixed(4)}`;
+                document.getElementById('outputCost').textContent = `$${costs.outputCost.toFixed(4)}`;
+                document.getElementById('ttsCost').textContent = `$${costs.ttsCost.toFixed(4)}`;
+                document.getElementById('totalCost').textContent = `$${costs.totalCost.toFixed(4)}`;
+            }
+    
+            reset() {
+                this.inputTokens = 0;
+                this.outputTokens = 0;
+                this.ttsChars = 0;
+                this.updateDisplay();
+            }
+        }
+    
+        // Initialize instances
+        const messageQueue = new MessageQueue();
+        const audioQueue = new AudioQueue();
+        const sessionPricing = new SessionPricing();
+    
+        // Demographics form handling
+        document.getElementById('demographicForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const originalContent = submitBtn.innerHTML;
+            
+            try {
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+                submitBtn.disabled = true;
+                
+                const formData = new FormData(e.target);
+                const data = Object.fromEntries(formData.entries());
+                
+                const response = await fetch('http://localhost:8000/demographics', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                if (response.ok) {
+                    submitBtn.innerHTML = '<i class="fas fa-check"></i> Saved Successfully';
+                    submitBtn.style.background = 'linear-gradient(135deg, #10B981 0%, #059669 100%)';
+                    
+                    setTimeout(() => {
+                        const demoPanel = document.getElementById('demographicsPanel');
+                        demoPanel.style.opacity = '0';
+                        demoPanel.style.transform = 'translateY(-10px)';
+                        
+                        setTimeout(() => {
+                            demoPanel.style.display = 'none';
+                            
+                            startButton.disabled = false;
+                            startButton.classList.remove('opacity-50', 'cursor-not-allowed');
+                            startButton.classList.add('animate-pulse');
+                            
+                            statusDiv.textContent = 'Demographics saved. Ready to start your session.';
+                            
+                            demographicsSubmitted = true;
+                        }, 500);
+                    }, 1000);
+                } else {
+                    throw new Error('Server response was not ok');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                submitBtn.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Error saving data';
+                submitBtn.style.background = 'linear-gradient(135deg, #EF4444 0%, #DC2626 100%)';
+                
+                setTimeout(() => {
+                    submitBtn.innerHTML = originalContent;
+                    submitBtn.style.background = '';
+                    submitBtn.disabled = false;
+                }, 3000);
+            }
+        });
+    
+        // Audio Analysis and Visualization Functions
+        function getAudioLevel(audioData) {
+            let sum = 0;
+            for (let i = 0; i < audioData.length; i++) {
+                sum += Math.abs(audioData[i]);
+            }
+            return sum / audioData.length;
+        }
+        
+        function startAnimation() {
+            clearInterval(animationInterval);
+            waveBars.forEach(bar => bar.classList.add('active'));
+        }
+        
+        function updateVisualization(audioLevel) {
+            const maxHeight = 80;
+            const minHeight = 10;
+            const scaledLevel = Math.max(0.1, Math.min(1, audioLevel * 5));
+            
+            waveBars.forEach(bar => {
+                const randomVariation = 0.8 + Math.random() * 0.4;
+                const height = minHeight + (maxHeight - minHeight) * scaledLevel * randomVariation;
+                bar.style.height = `${height}px`;
+            });
+        }
+        
+        function stopAnimation() {
+            clearInterval(animationInterval);
+            waveBars.forEach(bar => {
+                bar.classList.remove('active');
+                bar.style.height = '20px';
+            });
+        }
+        
+        function downsampleBuffer(buffer, sampleRate, outSampleRate) {
+            if (outSampleRate === sampleRate) {
+                return buffer;
+            }
+            const sampleRateRatio = sampleRate / outSampleRate;
+            const newLength = Math.round(buffer.length / sampleRateRatio);
+            const result = new Float32Array(newLength);
+            let offsetResult = 0;
+            let offsetBuffer = 0;
+            
+            while (offsetResult < result.length) {
+                const nextOffsetBuffer = Math.round((offsetResult + 1) * sampleRateRatio);
+                let accum = 0, count = 0;
+                for (let i = offsetBuffer; i < nextOffsetBuffer && i < buffer.length; i++) {
+                    accum += buffer[i];
+                    count++;
+                }
+                result[offsetResult] = accum / count;
+                offsetResult++;
+                offsetBuffer = nextOffsetBuffer;
+            }
+            return result;
+        }
+    
+        // Recording Control Functions
+        async function startRecording() {
+            try {
+                if (!demographicsSubmitted) {
+                    alert('Please complete the patient information form first.');
+                    return;
+                }
+    
+                sessionPricing.reset();
+                const stream = await navigator.mediaDevices.getUserMedia({audio: true});
+                audioContext = new (window.AudioContext || window.webkitAudioContext)({sampleRate: SAMPLE_RATE});
+                sourceNode = audioContext.createMediaStreamSource(stream);
+        
+                socket = new WebSocket('ws://localhost:8000/ws');
+        
+                socket.onopen = () => {
+                    statusDiv.textContent = 'Connected - Session started';
+                    startButton.disabled = true;
+                    stopButton.disabled = false;
+                    stopButton.classList.remove('opacity-50', 'cursor-not-allowed');
+        
+                    scriptProcessor = audioContext.createScriptProcessor(BUFFER_SIZE, 1, 1);
+                    sourceNode.connect(scriptProcessor);
+                    scriptProcessor.connect(audioContext.destination);
+        
+                    scriptProcessor.onaudioprocess = (audioProcessingEvent) => {
+                        if (socket.readyState === WebSocket.OPEN) {
+                            const audioData = audioProcessingEvent.inputBuffer.getChannelData(0);
+                            const audioLevel = getAudioLevel(audioData);
+                            updateVisualization(audioLevel);
+                            
+                            const downsampledBuffer = downsampleBuffer(audioData, audioContext.sampleRate, SAMPLE_RATE);
+                            const int16Array = new Int16Array(downsampledBuffer.length);
+                            for (let i = 0; i < downsampledBuffer.length; i++) {
+                                int16Array[i] = Math.max(-32768, Math.min(32767, Math.floor(downsampledBuffer[i] * 32768)));
+                            }
+                            socket.send(int16Array.buffer);
+                        }
+                    };
+                };
+    
+                socket.onmessage = async (event) => {
+                    try {
+                        if (event.data instanceof Blob) {
+                            const arrayBuffer = await event.data.arrayBuffer();
+                            audioQueue.addAudioChunk(arrayBuffer);
+                        } else {
+                            const data = JSON.parse(event.data);
+    
+                            if (data.type === 'MESSAGE') {
+                                messageQueue.addChunk(data.messageSeq, data.chunkSeq, data.text);
+                                
+                                if (data.text && data.text.includes('transcript:')) {
+                                    const transcript = data.text.split('transcript:')[1].trim();
+                                    sessionPricing.addInputText(transcript);
+                                }
+                                
+                                if (data.text && data.text.includes('SENTENCE:')) {
+                                    const sentence = data.text.split('SENTENCE:')[1].trim();
+                                    sessionPricing.addOutputText(sentence);
+                                    sessionPricing.addTTSChars(sentence);
+                                }
+                            } else if (data.type === 'COMMAND') {
+                                if (data.text === 'STOP_SPEAKING') {
+                                    audioQueue.stopCurrentAudio();
+                                } else if (data.text === 'DISCONNECT_STREAM') {
+                                    stopRecording();
+                                }
+                            }
+                        }
+                    } catch (error) {
+                        console.error('Error handling message:', error);
+                    }
+                };
+    
+                socket.onclose = () => {
+                    statusDiv.textContent = 'Disconnected - Session ended';
+                    startButton.disabled = false;
+                    stopButton.disabled = true;
+                    stopButton.classList.add('opacity-50', 'cursor-not-allowed');
+                    stopAnimation();
+                };
+    
+                socket.onerror = (error) => {
+                    console.error('WebSocket error:', error);
+                    statusDiv.textContent = 'Connection error occurred';
+                };
+    
+            } catch (error) {
+                console.error('Error starting recording:', error);
+                statusDiv.textContent = 'Error starting session';
+            }
+        }
+    
+        function stopRecording() {
+            audioQueue.stopCurrentAudio();
+            if (socket && socket.readyState === WebSocket.OPEN) {
+                socket.send(JSON.stringify({type: 'COMMAND', text: 'CLOSE_WEBSOCKET'}));
+                socket.close();
+            }
+            if (sourceNode) {
+                sourceNode.disconnect();
+            }
+            if (scriptProcessor) {
+                scriptProcessor.disconnect();
+            }
+            if (audioContext) {
+                audioContext.close();
+            }
+            startButton.disabled = false;
+            stopButton.disabled = true;
+            stopButton.classList.add('opacity-50', 'cursor-not-allowed');
+            statusDiv.textContent = 'Session ended';
+            stopAnimation();
+        }
+    
+        // Event listeners
+        startButton.addEventListener('click', async () => {
+            await startRecording();
+            startAnimation();
+        });
+    
+        stopButton.addEventListener('click', () => {
+            stopRecording();
+            stopAnimation();
+        });
+    </script>
+    </body>
+    </html>
