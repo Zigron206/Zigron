@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schedule Meeting</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-dark: #0f172a;
+            --secondary-dark: #1e293b;
+            --accent-primary: #6366f1;
+            --accent-secondary: #818cf8;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --success-green: #22c55e;
+            --danger-red: #ef4444;
+            --warning-yellow: #f59e0b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background: var(--primary-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .header {
+            width: 100%;
+            text-align: center;
+            padding: 2rem 1rem;
+            background: linear-gradient(
+                to right,
+                rgba(99, 102, 241, 0.1),
+                rgba(129, 140, 248, 0.1)
+            );
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #6366f1, #818cf8, #a5b4fc);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+            letter-spacing: -0.5px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1400px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            padding: 0 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background: var(--secondary-dark);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+                        0 2px 4px -2px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.1);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid rgba(99, 102, 241, 0.2);
+        }
+
+        .section-header i {
+            font-size: 1.25rem;
+            color: var(--accent-primary);
+        }
+
+        .section-header h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .controls {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: all 0.2s ease;
+        }
+
+        .btn i {
+            font-size: 1rem;
+        }
+
+        .btn-start {
+            background: var(--success-green);
+            color: white;
+            min-width: 140px;
+        }
+
+        .btn-stop {
+            background: var(--danger-red);
+            color: white;
+            min-width: 140px;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn:not(:disabled):hover {
+            transform: translateY(-1px);
+            filter: brightness(110%);
+        }
+
+        .output-box {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            border-radius: 12px;
+            padding: 1rem;
+            min-height: 200px;
+            max-height: 400px;
+            overflow-y: auto;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            white-space: pre-wrap;
+        }
+
+        .recording-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--danger-red);
+            display: none;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.5; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .recording .recording-indicator {
+            display: inline-block;
+        }
+
+        .message {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 8px;
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid var(--warning-yellow);
+            color: var(--warning-yellow);
+            display: none;
+        }
+
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .status-connected {
+            background: rgba(34, 197, 94, 0.1);
+            color: var(--success-green);
+            border: 1px solid rgba(34, 197, 94, 0.2);
+        }
+
+        .status-disconnected {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger-red);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        .status-connecting {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning-yellow);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+                padding: 0 1rem;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Schedule Meeting</h1>
+        <div id="connectionStatus" class="status-indicator status-disconnected">
+            <i class="fas fa-circle"></i>
+            <span>Disconnected</span>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="card">
+            <div class="section-header">
+                <i class="fas fa-microphone"></i>
+                <h2>Voice Input</h2>
+            </div>
+            <div class="controls">
+                <div class="recording-indicator"></div>
+                <button id="startBtn" class="btn btn-start">
+                    <i class="fas fa-play"></i>
+                    Start Recording
+                </button>
+                <button id="stopBtn" class="btn btn-stop" disabled>
+                    <i class="fas fa-stop"></i>
+                    Stop Recording
+                </button>
+            </div>
+            <div class="section-header">
+                <i class="fas fa-file-alt"></i>
+                <h2>Transcript</h2>
+            </div>
+            <div id="transcript" class="output-box"></div>
+        </div>
+
+        <div class="card">
+            <div class="section-header">
+                <i class="fas fa-calendar-alt"></i>
+                <h2>Meeting Details</h2>
+            </div>
+            <div id="llmOutput" class="output-box"></div>
+            <div id="nullMessage" class="message"></div>
+        </div>
+    </div>
+    <script>
+        class AudioRecorder {
+            constructor() {
+                this.websocket = null;
+                this.isRecording = false;
+                this.audioContext = null;
+                this.reconnectAttempts = 0;
+                this.maxReconnectAttempts = 5;
+                this.reconnectDelay = 1000;
+                this.setupWebSocket();
+            }
+
+            updateConnectionStatus(status) {
+                const statusElement = document.getElementById('connectionStatus');
+                const iconElement = statusElement.querySelector('i');
+                const textElement = statusElement.querySelector('span');
+                statusElement.className = 'status-indicator';
+                
+                switch(status) {
+                    case 'connected':
+                        statusElement.classList.add('status-connected');
+                        textElement.textContent = 'Connected';
+                        break;
+                    case 'disconnected':
+                        statusElement.classList.add('status-disconnected');
+                        textElement.textContent = 'Disconnected';
+                        break;
+                    case 'connecting':
+                        statusElement.classList.add('status-connecting');
+                        textElement.textContent = 'Connecting...';
+                        break;
+                }
+            }
+
+            setupWebSocket() {
+                this.updateConnectionStatus('connecting');
+                this.websocket = new WebSocket('ws://localhost:8000/ws');
+                
+                this.websocket.onopen = () => {
+                    this.updateConnectionStatus('connected');
+                    this.reconnectAttempts = 0;
+                    document.getElementById('startBtn').disabled = false;
+                };
+                
+                this.websocket.onclose = () => {
+                    this.updateConnectionStatus('disconnected');
+                    if (this.isRecording) {
+                        this.stopRecording();
+                    }
+                    this.reconnect();
+                };
+
+                this.websocket.onerror = (error) => {
+                    console.error('WebSocket error:', error);
+                    this.updateConnectionStatus('disconnected');
+                };
+                
+                this.websocket.onmessage = (event) => {
+                    const data = JSON.parse(event.data);
+                    if (data.type === 'INTERIM_TRANSCRIPT') {
+                        document.getElementById('transcript').textContent = data.text;
+                    } else if (data.type === 'FINAL_TRANSCRIPT') {
+                        document.getElementById('transcript').textContent = data.text;
+                        
+                        try {
+                            const jsonResponse = JSON.parse(data.llm_response);
+                            const formattedResponse = JSON.stringify(jsonResponse, null, 2);
+                            document.getElementById('llmOutput').textContent = formattedResponse;
+                        } catch {
+                            document.getElementById('llmOutput').textContent = data.llm_response;
+                        }
+
+                        const nullMessageElement = document.getElementById('nullMessage');
+                        if (data.null_message) {
+                            nullMessageElement.textContent = data.null_message;
+                            nullMessageElement.style.display = 'block';
+                            
+                            if (data.audio) {
+                                const audio = new Audio('data:audio/mp3;base64,' + data.audio);
+                                audio.play().catch(error => {
+                                    console.error('Error playing audio:', error);
+                                });
+                            }
+                        } else {
+                            nullMessageElement.style.display = 'none';
+                        }
+                    }
+                };
+            }
+
+            reconnect() {
+                if (this.reconnectAttempts < this.maxReconnectAttempts) {
+                    this.reconnectAttempts++;
+                    setTimeout(() => {
+                        console.log(`Attempting to reconnect (${this.reconnectAttempts}/${this.maxReconnectAttempts})...`);
+                        this.setupWebSocket();
+                    }, this.reconnectDelay * this.reconnectAttempts);
+                }
+            }
+
+            async startRecording() {
+                try {
+                    if (!this.websocket || this.websocket.readyState !== WebSocket.OPEN) {
+                        await this.setupWebSocket();
+                    }
+
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    this.audioContext = new AudioContext();
+                    const source = this.audioContext.createMediaStreamSource(stream);
+                    const processor = this.audioContext.createScriptProcessor(1024, 1, 1);
+
+                    source.connect(processor);
+                    processor.connect(this.audioContext.destination);
+
+                    processor.onaudioprocess = (e) => {
+                        if (this.isRecording && this.websocket?.readyState === WebSocket.OPEN) {
+                            const inputData = e.inputBuffer.getChannelData(0);
+                            const int16Array = new Int16Array(inputData.length);
+                            for (let i = 0; i < inputData.length; i++) {
+                                int16Array[i] = inputData[i] * 0x7FFF;
+                            }
+                            this.websocket.send(int16Array.buffer);
+                        }
+                    };
+
+                    this.isRecording = true;
+                    document.body.classList.add('recording');
+                    document.getElementById('startBtn').disabled = true;
+                    document.getElementById('stopBtn').disabled = false;
+                    document.getElementById('transcript').textContent = '';
+
+                } catch (error) {
+                    console.error('Error starting recording:', error);
+                }
+            }
+
+            async stopRecording() {
+                if (this.isRecording) {
+                    this.isRecording = false;
+                    document.body.classList.remove('recording');
+                    document.getElementById('startBtn').disabled = false;
+                    document.getElementById('stopBtn').disabled = true;
+
+                    if (this.websocket?.readyState === WebSocket.OPEN) {
+                        this.websocket.send(JSON.stringify({
+                            type: 'COMMAND',
+                            text: 'STOP_RECORDING'
+                        }));
+                    }
+
+                    if (this.audioContext) {
+                        await this.audioContext.close();
+                        this.audioContext = null;
+                    }
+                }
+            }
+        }
+
+        const recorder = new AudioRecorder();
+
+        document.getElementById('startBtn').addEventListener('click', () => {
+            recorder.startRecording();
+        });
+
+        document.getElementById('stopBtn').addEventListener('click', () => {
+            recorder.stopRecording();
+        });
+
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible' && (!recorder.websocket || recorder.websocket.readyState !== WebSocket.OPEN)) {
+                recorder.setupWebSocket();
+            }
+        });
+    </script>
+</body>
+</html>
